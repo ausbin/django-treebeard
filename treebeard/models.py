@@ -15,6 +15,7 @@ from treebeard.exceptions import InvalidPosition, MissingNodeOrderBy
 class Node(models.Model):
     """Node class"""
 
+    allow_search_reordering = False
     _db_connection = None
 
     @classmethod

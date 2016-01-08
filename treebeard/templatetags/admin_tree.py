@@ -215,7 +215,7 @@ def results(cl):
                    list(items_for_result(cl, res, None)))
 
 
-def check_empty_dict(GET_dict):
+def check_empty_dict(GET_dict, allow_search_reordering):
     """
     Returns True if the GET querstring contains on values, but it can contain
     empty keys.
@@ -225,8 +225,9 @@ def check_empty_dict(GET_dict):
     empty = True
     for k, v in GET_dict.items():
         # Don't disable on p(age) or 'all' GET param
-        if v and k != 'p' and k != 'all':
+        if v and k != 'p' and k != 'all' and not (allow_search_reordering and k == 'q'):
             empty = False
+            break
     return empty
 
 
@@ -249,7 +250,7 @@ def result_tree(context, cl, request):
         'class_attrib': mark_safe(' class="oder-grabber"')
     })
     return {
-        'filtered': not check_empty_dict(request.GET),
+        'filtered': not check_empty_dict(request.GET, cl.model.allow_search_reordering),
         'result_hidden_fields': list(result_hidden_fields(cl)),
         'result_headers': headers,
         'results': list(results(cl)),
